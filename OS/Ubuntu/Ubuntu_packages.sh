@@ -1,15 +1,19 @@
-# Author : DennisLiu16
+# Author: DennisLiu16
 
-# In any server, the best way to get this script is install git by
+# Version: 1.0
+
+# For any server, the best way to get this script is git clone
 # sudo apt install git 
-# git clone <>
+# git clone https://github.com/DennisLiu16/pkg_installation_script
 
-# get flags
+# Todo list
+#   - func:getopts
+
+# TODO: get params
 
 # create a tmp dir
-mkdir "/ubuntu/pkg_tmp"
+mkdir ./pkg_tmp
 cd /ubuntu/pkg_tmp
-sudo apt install git
 
 # update 
 sudo apt update
@@ -22,7 +26,10 @@ sudo apt upgrade
 # libc6-dev
 # make
 sudo apt install build-essential
+
+# install development tools
 sudo apt install cmake
+sudo apt install git
 
 # install editor 
 sudo apt install vim
@@ -32,7 +39,7 @@ sudo apt install code
 sudo apt install nmap
 
 # install some libraries for project - LRA
-# C++ - fmt
+# C++ fmt
 git clone https://github.com/fmtlib/fmt.git
 cd fmt
 mkdir build 
@@ -46,7 +53,5 @@ sudo apt-get install wiringPi
 
 # install utils
 sudo apt install tree
-
-# group 
 
 

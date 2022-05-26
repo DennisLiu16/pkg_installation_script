@@ -91,6 +91,11 @@ installation_info "wiringPi"
 sudo apt-get install wiringPi
 installation_end "wiringPi"
 
+# vcgencmd
+installation_info "vcgencmd"
+sudo apt install libraspberrypi-bin
+installation_end "vcgencmd"
+
 # main program
 installation_info "LRA main program"
 # store current path

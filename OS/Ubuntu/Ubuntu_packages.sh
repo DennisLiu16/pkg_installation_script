@@ -77,22 +77,27 @@ installation_end "tree"
 # install some libraries for project - LRA
 # C++ fmt
 installation_info "fmt"
-git clone https://github.com/fmtlib/fmt.git
-cd fmt
-mkdir build 
-cd build
-cmake ..
-sudo make install
+# TODO:check fmt existed or not
+if [ ! -d "/usr/local/include/fmt" ]
+then
+    git clone https://github.com/fmtlib/fmt.git
+    cd fmt
+    mkdir build 
+    cd build
+    cmake ..
+    sudo make install
+fi
 installation_end "fmt"
 
 # wiringPi
 installation_info "wiringPi"
-sudo apt-get install wiringPi
+sudo apt install wiringpi -y
 installation_end "wiringPi"
 
 # vcgencmd
 installation_info "vcgencmd"
 sudo apt install libraspberrypi-bin -y
+sudo usermod -aG video $(whoami)
 installation_end "vcgencmd"
 
 # main program
@@ -105,6 +110,9 @@ cd ~
 git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
 
 installation_end "LRA main program"
+
+# TODO:if reboot flag on
+sudo reboot
 
 
 

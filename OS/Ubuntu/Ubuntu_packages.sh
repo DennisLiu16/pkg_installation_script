@@ -82,7 +82,6 @@ cd fmt
 mkdir build 
 cd build
 cmake ..
-cd ..
 sudo make install
 installation_end "fmt"
 
@@ -93,7 +92,7 @@ installation_end "wiringPi"
 
 # vcgencmd
 installation_info "vcgencmd"
-sudo apt install libraspberrypi-bin
+sudo apt install libraspberrypi-bin -y
 installation_end "vcgencmd"
 
 # main program

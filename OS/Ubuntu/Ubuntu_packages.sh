@@ -13,11 +13,11 @@
 
 # create a tmp dir
 mkdir ./pkg_tmp
-cd /ubuntu/pkg_tmp
+cd ./pkg_tmp
 
 # update 
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 
 # install ubuntu build essential tool
 # dpkg-dev

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Author: DennisLiu16
 
 # Version: 1.0
@@ -9,6 +10,22 @@
 # Todo list
 #   - func:getopts
 
+# function define
+function NL() {
+    # new line
+    echo " "
+}
+
+function installation_info() {
+    NL
+    echo "$1 is installing"
+}
+
+function installation_end() {
+    echo "$1 installation finished"
+    NL
+}
+
 # TODO: get params
 
 # create a tmp dir
@@ -16,7 +33,7 @@ mkdir ./pkg_tmp
 cd ./pkg_tmp
 
 # update 
-sudo apt update
+sudo apt update -y
 sudo apt upgrade -y
 
 # install ubuntu build essential tool
@@ -25,21 +42,41 @@ sudo apt upgrade -y
 # gcc
 # libc6-dev
 # make
-sudo apt install build-essential
+installation_info "build-essential"
+sudo apt install build-essential -y
+installation_end "build-essential"
 
 # install development tools
-sudo apt install cmake
-sudo apt install git
+installation_info "cmake"
+sudo apt install cmake -y
+installation_end "cmake"
+
+installation_info "git"
+sudo apt install git -y
+installation_end "git"
 
 # install editor 
+installation_info "vim"
 sudo apt install vim
+installation_end "vim"
+
+installation_info "code"
 sudo apt install code
+installation_end "code"
 
 # install network related
+installation_info "nmap"
 sudo apt install nmap
+installation_end "code"
+
+# install utils
+installation_info "tree"
+sudo apt install tree
+installation_end "tree"
 
 # install some libraries for project - LRA
 # C++ fmt
+installation_info "fmt"
 git clone https://github.com/fmtlib/fmt.git
 cd fmt
 mkdir build 
@@ -47,11 +84,23 @@ cd build
 cmake ..
 cd ..
 sudo make install
+installation_end "fmt"
 
 # wiringPi
+installation_info "wiringPi"
 sudo apt-get install wiringPi
+installation_end "wiringPi"
 
-# install utils
-sudo apt install tree
+# main program
+installation_info "LRA main program"
+# store current path
+PARENT_PATH = $(pwd)
+# go to /~
+cd ~
+# clone from git
+git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
+
+installation_end "LRA main program"
+
 
 

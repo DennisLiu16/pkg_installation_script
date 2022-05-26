@@ -61,13 +61,13 @@ sudo apt install vim
 installation_end "vim"
 
 installation_info "code"
-sudo apt install code
+sudo snap install --classic code
 installation_end "code"
 
 # install network related
 installation_info "nmap"
 sudo apt install nmap
-installation_end "code"
+installation_end "nmap"
 
 # install utils
 installation_info "tree"

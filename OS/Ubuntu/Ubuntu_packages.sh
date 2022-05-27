@@ -44,14 +44,14 @@ sudo apt upgrade -y
 # make
 installation_info "build-essential"
 sudo apt install build-essential -y
+# Could NOT find OpenSSL, try to set the path to OpenSSL root folder problem
 sudo apt install libssl-dev -y
 sudo apt install gdb -y
 installation_end "build-essential"
 
 # install development tools
 installation_info "cmake 3.22.4"
-# Could NOT find OpenSSL, try to set the path to OpenSSL root folder problem
-sudo apt install libssl-dev
+
 # CMake 3.22.4
 wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4.tar.gz
 tar zxvf cmake-3.22.4.tar.gz
@@ -81,7 +81,7 @@ installation_end "pip"
 
 # install network related
 installation_info "nmap"
-sudo apt install nmap
+sudo apt install nmap -y
 installation_end "nmap"
 
 # install utils
@@ -108,7 +108,7 @@ installation_end "fmt"
 # wiringPi
 installation_info "wiringPi"
 # Oops model 17 problem
-sudo dpkg --add-architecture armhf
+sudo dpkg --add-architecture armhf -y
 sudo apt update
 wget https://github.com/guation/WiringPi-arm64/releases/download/2.61-g/wiringpi-2.61-g.deb
 sudo apt install -f ./wiringpi-*-g.deb
@@ -139,7 +139,20 @@ cd ~
 # clone from git
 git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
 
+# TODO:maybe add build or something here
+
 installation_end "LRA main program"
+
+# LRA web
+installation_info "LRA Web"
+git clone https://github.com/DennisLiu16/LRA_Web.git
+
+# packages required
+pip install django
+pip install matplotlib
+pip install prettytable
+
+installation_end "LRA Web"
 
 # TODO:add global and git alias
 

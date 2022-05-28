@@ -200,6 +200,9 @@ function install_ubuntu_LRA_onpi() {
         pip install django
         pip install matplotlib
         pip install prettytable
+        cd LRA_Web
+        # create tables
+        python manage.py migrate
         cd $PARENT_PATH
     else 
         echo "LRA_Web already existed at default path"

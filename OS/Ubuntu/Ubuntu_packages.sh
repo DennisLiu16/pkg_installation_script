@@ -56,22 +56,44 @@ function install_ubuntu_dev() {
     installation_end "build-essential"
 
     # install development tools
-    installation_info "cmake 3.22.4"
-
     # CMake 3.22.4
-    if ! which cmake 2>/dev/null; then
-        wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4.tar.gz
-        tar zxvf cmake-3.22.4.tar.gz
-        cd cmake-3.22.4
-        ./bootstrap
-        make
-        sudo make install
-        installation_end "cmake 3.22.4"
+    if [[ $ONPI = true && $PROJECT = "LRA" ]];then
+        installation_info "cmake 3.22.4"
+        if ! which cmake 2>/dev/null; then
+            # download and compile, will take about 1 hour
+            # cd $PARENT_PATH
+            # wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4.tar.gz
+            # tar zxvf cmake-3.22.4.tar.gz
+            # cd cmake-3.22.4
+            # ./bootstrap
+            # make
+            # sudo make install
+            # installation_end "cmake 3.22.4"
+
+            # install binary files directly
+            # install path to /opt/cmake
+            cd /opt
+            sudo wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4-linux-aarch64.sh
+            sudo chmod +x cmake-3.22.4-linux-aarch64.sh
+            sudo ./cmake-3.22.4-linux-aarch64.sh
+            # link to usr/local/bin
+            sudo ln -s /opt/cmake-3.22.4-linux-aarch64.sh/bin/* usr/local/bin
+            cd $PARENT_PATH
+            if [ which cmake 2>/dev/null ];then
+                installation_end "cmake 3.22.4"
+            else
+                color_red "cmake 3.22.4 installation failed, please check it\n\n"
+                echo -e $color_word
+        else
+            color_red "cmake already installed, this project required cmake 3.22.4.
+                \n Please installed it manually or remove it first"
+            echo -e $color_word
+            sleep 5s
+        fi
     else
-        color_red "cmake already installed, this project required cmake 3.22.4.
-                   Please installed it manually or remove it first"
-        echo -e $color_word
-        sleep 5s
+        installation_info "cmake default"
+        sudo apt install cmake
+        installation_end "cmake default"
     fi
 
     # git
@@ -111,8 +133,9 @@ function install_ubuntu_LRA_onpi() {
     # C++ fmt
     installation_info "fmt"
     # TODO:check fmt existed or not
-    if [ ! -d "/usr/local/include/fmt" ]
+    if [[ ! -d "/usr/local/include/fmt" && ! -d "/usr/include/fmt" ]]
     then
+        cd $PARENT_PATH
         git clone https://github.com/fmtlib/fmt.git
         cd fmt
         mkdir build 
@@ -152,15 +175,17 @@ function install_ubuntu_LRA_onpi() {
 
     # main program
     installation_info "LRA main program"
-    # store current path
-    PARENT_PATH=$(pwd)
-    # go to /~
-    cd ~
     if [ ! -d "./LRA_Raspberry4b" ];then
         # clone from git
+        cd ~
         git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
-
+        # build
+        cd LRA_Raspberry4b/build
+        cmake ..
+        make
         # TODO:maybe add build or something here
+        cd $PARENT_PATH
+
     else
         echo "LRA_Raspberry4b already existed at default path"
     fi
@@ -169,11 +194,13 @@ function install_ubuntu_LRA_onpi() {
     # LRA web
     installation_info "LRA Web"
     if [ ! -d "./LRA_Web" ];then
+        cd ~
         git clone https://github.com/DennisLiu16/LRA_Web.git
-            # packages required
-            pip install django
-            pip install matplotlib
-            pip install prettytable
+        # packages required
+        pip install django
+        pip install matplotlib
+        pip install prettytable
+        cd $PARENT_PATH
     else 
         echo "LRA_Web already existed at default path"
     fi
@@ -187,6 +214,7 @@ function install_ubuntu_LRA_onpi() {
     echo "alias getMAC='cat /sys/class/net/wlan0/address'" >> .bash_aliases
     # measure
     echo "alias temp='vcgencmd measure_temp'" >> .bash_aliases
+    cd $PARENT_PATH
 }
 
 # get params
@@ -291,6 +319,9 @@ if [ ! -d "./pkg_tmp" ];then
     mkdir ./pkg_tmp
 fi
 cd ./pkg_tmp
+
+# store current path
+PARENT_PATH=$(pwd)
 
 # update 
 sudo apt update -y

@@ -24,13 +24,14 @@ function installation_end() {
 }
 
 function usage() {
-    echo "Usage: [-a --all][-h --help][--reboot][--onPi][-p <project>]
+    echo "Usage: [-a --all][-h --help][--reboot][--onPi][--LRA][-p <project>]
     
     [-a -all] : enable all flags
     [-h --help] : print usage
     [--reboot] : enable reboot after all installation
     [--onPi] : run the script on raspberry hardware
     [-p <project>] : run the script for specific <project>
+    [--LRA] : special usage for LRA project
     "
     1>&2
 }
@@ -58,28 +59,36 @@ function install_ubuntu_dev() {
     installation_info "cmake 3.22.4"
 
     # CMake 3.22.4
-    wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4.tar.gz
-    tar zxvf cmake-3.22.4.tar.gz
-    cd cmake-3.22.4
-    ./bootstrap
-    make
-    sudo make install
-    installation_end "cmake 3.22.4"
+    if ! which cmake 2>/dev/null; then
+        wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4.tar.gz
+        tar zxvf cmake-3.22.4.tar.gz
+        cd cmake-3.22.4
+        ./bootstrap
+        make
+        sudo make install
+        installation_end "cmake 3.22.4"
+    else
+        color_red "cmake already installed, this project required cmake 3.22.4.
+                   Please installed it manually or remove it first"
+        echo -e $color_word
+        sleep 5s
+    fi
 
     # git
     installation_info "git"
     sudo apt install git -y
+    git config --global core.editor vim
+    # add some useful aliases
+    git config alias.co checkout
+    git config alias.br branch
+    git config alias.ci commit
+    git config alias.st status
     installation_end "git"
 
     # install editor 
     installation_info "vim"
     sudo apt install vim
     installation_end "vim"
-
-    # check valid or not
-    installation_info "code"
-    sudo snap install --classic code
-    installation_end "code"
 
     installation_info "pip"
     sudo apt install python3-pip -y
@@ -119,7 +128,7 @@ function install_ubuntu_LRA_onpi() {
     # wiringPi
     installation_info "wiringPi"
     # Oops model 17 problem
-    sudo dpkg --add-architecture armhf -y
+    sudo dpkg --add-architecture armhf
     sudo apt update
     wget https://github.com/guation/WiringPi-arm64/releases/download/2.61-g/wiringpi-2.61-g.deb
     sudo apt install -f ./wiringpi-*-g.deb
@@ -144,33 +153,40 @@ function install_ubuntu_LRA_onpi() {
     # main program
     installation_info "LRA main program"
     # store current path
-    PARENT_PATH = $(pwd)
+    PARENT_PATH=$(pwd)
     # go to /~
     cd ~
-    # clone from git
-    git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
+    if [ ! -d "./LRA_Raspberry4b" ];then
+        # clone from git
+        git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
 
-    # TODO:maybe add build or something here
-
+        # TODO:maybe add build or something here
+    else
+        echo "LRA_Raspberry4b already existed at default path"
+    fi
     installation_end "LRA main program"
 
     # LRA web
     installation_info "LRA Web"
-    git clone https://github.com/DennisLiu16/LRA_Web.git
-
-    # packages required
-    pip install django
-    pip install matplotlib
-    pip install prettytable
-
+    if [ ! -d "./LRA_Web" ];then
+        git clone https://github.com/DennisLiu16/LRA_Web.git
+            # packages required
+            pip install django
+            pip install matplotlib
+            pip install prettytable
+    else 
+        echo "LRA_Web already existed at default path"
+    fi
     installation_end "LRA Web"
 
-    # TODO:add global and git alias
+    # TODO:add global alias
     cd ~
-    echo alias cdc="cd ~/LRA_Raspberry4b" >> .bash_aliases
-    echo alias cdw="cd ~/LRA_Web" >> .bash_aliases
+    echo "alias cdc='cd ~/LRA_Raspberry4b'" >> .bash_aliases
+    echo "alias cdw='cd ~/LRA_Web'">> .bash_aliases
     # wifi 
-    echo alias getMAC="cat cat /sys/class/net/wlan0/address"
+    echo "alias getMAC='cat /sys/class/net/wlan0/address'" >> .bash_aliases
+    # measure
+    echo "alias temp='vcgencmd measure_temp'" >> .bash_aliases
 }
 
 # get params
@@ -184,7 +200,7 @@ if which getopt &>/dev/null; then
 fi
 
 if [[ "${optExist}"x = "true"x ]]; then
-    ARGS=$(getopt -o "ap:h" --long help,all,reboot,onPi,project: -- "$@" 2>&1) || exit
+    ARGS=$(getopt -o "ap:h" --long help,all,reboot,onPi,LRA,project: -- "$@" 2>&1) || exit
 fi
 
 # flags init
@@ -218,6 +234,11 @@ do
     --onPi)
         ONPI=true
         shift    
+    ;;
+    --LRA)
+        PROJECT="LRA"
+        ONPI=true
+        shift
     ;;
     --)
         # ignore positional args

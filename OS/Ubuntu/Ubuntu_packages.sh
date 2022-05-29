@@ -84,9 +84,10 @@ function install_ubuntu_dev() {
             else
                 color_red "cmake 3.22.4 installation failed, please check it\n\n"
                 echo -e $color_word
+            fi
         else
             color_red "cmake already installed, this project required cmake 3.22.4.
-                \n Please installed it manually or remove it first"
+                \nPlease installed it manually or remove it first"
             echo -e $color_word
             sleep 5s
         fi
@@ -175,7 +176,7 @@ function install_ubuntu_LRA_onpi() {
 
     # main program
     installation_info "LRA main program"
-    if [ ! -d "./LRA_Raspberry4b" ];then
+    if [ ! -d "~/LRA_Raspberry4b" ];then
         # clone from git
         cd ~
         git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
@@ -193,7 +194,7 @@ function install_ubuntu_LRA_onpi() {
 
     # LRA web
     installation_info "LRA Web"
-    if [ ! -d "./LRA_Web" ];then
+    if [ ! -d "~/LRA_Web" ];then
         cd ~
         git clone https://github.com/DennisLiu16/LRA_Web.git
         # packages required
@@ -203,6 +204,9 @@ function install_ubuntu_LRA_onpi() {
         cd LRA_Web
         # create tables
         python manage.py migrate
+
+        # TODO:auto runserver cmd
+
         cd $PARENT_PATH
     else 
         echo "LRA_Web already existed at default path"

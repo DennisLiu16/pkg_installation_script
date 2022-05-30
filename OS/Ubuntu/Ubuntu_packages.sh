@@ -197,6 +197,9 @@ function install_ubuntu_LRA_onpi() {
     # install libi2c
     installation_info "libi2c-dev"
     sudo apt install libi2c-dev -y
+    # add $USER to i2c group
+    sudo adduser $USER i2c
+    sudo su $USER
     installation_end "libi2c-dev"
 
     # vcgencmd

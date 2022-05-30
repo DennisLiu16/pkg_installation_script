@@ -187,6 +187,29 @@ function install_ubuntu_LRA_onpi() {
         # TODO:maybe add build or something here
         cd $PARENT_PATH
 
+        # setting spi
+        GROUP="spi"
+        if [ ! $(getent group $GROUP) ]; then
+            sudo groupadd $GROUP
+            sudo su $USER
+        fi
+
+        if  id -nG "$USER" | grep -qw "$GROUP" ; then
+            #ignore
+            echo "$USER was already in $GROUP"
+        else
+            sudo adduser $USER $GROUP
+            sudo su $USER
+        fi
+
+        if grep '#for LRA SPI' /etc/udev/rules.d/50-spi.rules ; then
+            echo "50-spi.rules for LRA already exists"
+        else
+            # avoid >> error
+            echo -e '\n\nset rule for LRA spi\n\n'
+            echo -e "#for LRA SPI\nSUBSYSTEM==\"spidev\",KERNEL==\"spidev0.*\",GROUP=\"spi\",MODE=\"0660\"" | sudo tee -a /etc/udev/rules.d/50-spi.rules
+        fi
+
     else
         echo "LRA_Raspberry4b already existed at default path"
     fi

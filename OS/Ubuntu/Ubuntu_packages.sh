@@ -127,9 +127,35 @@ function install_ubuntu_dev() {
     sudo apt install tree
     installation_end "tree"
 
+    # add vscode
+
+    installation_info "code normal"
+    sudo apt install code
+    installation_end "code normal"
 }
 
 function install_ubuntu_LRA_onpi() {
+    # add code for aarch64 (ARM64)
+    cd $PARENT_PATH
+    wget https://update.code.visualstudio.com/latest/linux-deb-arm64/stable -O code.deb
+    sudo dpkg -i code.deb
+    sudo apt --fix-broken install -y
+    sudo dpkg -i code.deb
+
+    code --install-extension austin.code-gnu-global
+    code --install-extension cschlosser.doxdocgen
+    code --install-extension Gruntfuggly.todo-tree
+    code --install-extension jeff-hykin.better-cpp-syntax
+    code --install-extension ms-python.python
+    code --install-extension ms-python.vscode-pylance
+    code --install-extension ms-toolsai.jupyter
+    code --install-extension ms-toolsai.jupyter-keymap
+    code --install-extension ms-toolsai.jupyter-renderers
+    code --install-extension ms-vscode.cmake-tools
+    code --install-extension ms-vscode.cpptools
+    code --install-extension ms-vscode.cpptools-extension-pack
+    code --install-extension ms-vscode.cpptools-themes
+
     # install some libraries for project - LRA on Raspberry 4b
     # C++ fmt
     installation_info "fmt"
@@ -143,7 +169,7 @@ function install_ubuntu_LRA_onpi() {
         cd build
         cmake ..
         sudo make install
-        cd ../..
+        cd $PARENT_PATH
     else
         echo "fmt already installed"
     fi
@@ -151,10 +177,15 @@ function install_ubuntu_LRA_onpi() {
 
     # wiringPi
     installation_info "wiringPi"
+    cd $PARENT_PATH
+    if find . -name wiringpi-2.61-g.deb ; then
+        echo "wiringpi-2.61-g.deb already downloaded"
+    else
     # Oops model 17 problem
-    sudo dpkg --add-architecture armhf
-    sudo apt update
-    wget https://github.com/guation/WiringPi-arm64/releases/download/2.61-g/wiringpi-2.61-g.deb
+        sudo dpkg --add-architecture armhf
+        sudo apt update
+        wget https://github.com/guation/WiringPi-arm64/releases/download/2.61-g/wiringpi-2.61-g.deb
+    fi
     sudo apt install -f ./wiringpi-*-g.deb
 
     # gpio -readall group problem
@@ -187,7 +218,7 @@ function install_ubuntu_LRA_onpi() {
         # TODO:maybe add build or something here
         cd $PARENT_PATH
 
-        # setting spi
+        # setting spi config
         GROUP="spi"
         if [ ! $(getent group $GROUP) ]; then
             sudo groupadd $GROUP

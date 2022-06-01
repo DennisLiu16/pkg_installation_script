@@ -131,6 +131,9 @@ function install_ubuntu_dev() {
 }
 
 function install_ubuntu_LRA_onpi() {
+    # change time zone
+    sudo timedatectl set-timezone Asia/Taipei
+
     # add code for aarch64 (ARM64)
     cd $PARENT_PATH
     installation_info "VS Code arm64 stable"

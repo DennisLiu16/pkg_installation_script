@@ -73,11 +73,14 @@ function install_ubuntu_dev() {
             # install binary files directly
             # install path to /opt/cmake
             cd /opt
-            sudo wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4-linux-aarch64.sh
-            sudo chmod +x cmake-3.22.4-linux-aarch64.sh
-            sudo ./cmake-3.22.4-linux-aarch64.sh -y
+            # sudo wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4-linux-aarch64.sh
+            # sudo chmod +x cmake-3.22.4-linux-aarch64.sh
+
+            sudo wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4-linux-aarch64.tar.gz
+            sudo tar zxvf cmake-3.22.4-linux-aarch64.tar.gz
+
             # link to usr/local/bin
-            sudo ln -s /opt/cmake-3.22.4-linux-aarch64.sh/bin/* /usr/local/bin
+            sudo ln -s /opt/cmake-3.22.4-linux-aarch64/bin/* /usr/local/bin/
             cd $PARENT_PATH
             if [ which cmake 2>/dev/null ];then
                 installation_end "cmake 3.22.4"

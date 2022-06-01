@@ -77,8 +77,8 @@ function install_ubuntu_dev() {
             sudo chmod +x cmake-3.22.4-linux-aarch64.sh
             sudo ./cmake-3.22.4-linux-aarch64.sh
             # link to usr/local/bin
-            mkdir usr/local/bin
-            sudo ln -s /opt/cmake-3.22.4-linux-aarch64.sh/bin/* usr/local/bin
+            mkdir /usr/local/bin
+            sudo ln -s /opt/cmake-3.22.4-linux-aarch64.sh/bin/* /usr/local/bin
             cd $PARENT_PATH
             if [ which cmake 2>/dev/null ];then
                 installation_end "cmake 3.22.4"

@@ -77,6 +77,7 @@ function install_ubuntu_dev() {
             sudo chmod +x cmake-3.22.4-linux-aarch64.sh
             sudo ./cmake-3.22.4-linux-aarch64.sh
             # link to usr/local/bin
+            mkdir usr/local/bin
             sudo ln -s /opt/cmake-3.22.4-linux-aarch64.sh/bin/* usr/local/bin
             cd $PARENT_PATH
             if [ which cmake 2>/dev/null ];then
@@ -354,7 +355,7 @@ else
     sONPI=$ONPI
 fi
 
-if [ $ENABLE_REBOOT == true ];then
+if [ $ENABLE_REBOOT = true ];then
     color_red $ENABLE_REBOOT
     sENABLE_REBOOT=$color_word
 else
@@ -401,11 +402,12 @@ install_ubuntu_dev
 
 # install LRA project depend software and alias
 if [[ $PROJECT = "LRA" && $ONPI = true ]];then
-    echo "project is LRA"
+    color_red "project is LRA"
+    echo $color_word
     install_ubuntu_LRA_onpi
 fi
 
 # if reboot flag on
-if [ $ENABLE_REBOOT == true ];then
+if [ $ENABLE_REBOOT = true ];then
     sudo reboot
 fi

@@ -330,7 +330,7 @@ do
     ;;
     --reboot)
         ENABLE_REBOOT=true
-        shift 1
+        shift 
     ;;
     --onPi)
         ONPI=true
@@ -398,7 +398,7 @@ PARENT_PATH=$(pwd)
 
 # update 
 sudo apt update -y
-sudo apt upgrade -ys
+sudo apt upgrade -y
 
 # install development tools in ubuntu
 install_ubuntu_dev
@@ -410,8 +410,12 @@ if [[ $PROJECT = "LRA" && $ONPI = true ]];then
     install_ubuntu_LRA_onpi
 fi
 
+echo $ENABLE_REBOOT
+
 # if reboot flag on
 if [ $ENABLE_REBOOT = true ];then
     echo "reboot starts"
     sudo reboot
 fi
+
+

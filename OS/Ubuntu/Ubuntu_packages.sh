@@ -251,7 +251,8 @@ function install_ubuntu_LRA_onpi() {
             echo "50-spi.rules for LRA already exists"
         else
             # avoid >> error
-            echo -e '\n\nset rule for LRA spi\n\n'
+            color_green '\n\nset rule for LRA spi\n\n'
+            echo -e $color_word
             echo -e "#for LRA SPI\nSUBSYSTEM==\"spidev\",KERNEL==\"spidev0.*\",GROUP=\"spi\",MODE=\"0660\"" | sudo tee -a /etc/udev/rules.d/50-spi.rules
         fi
 

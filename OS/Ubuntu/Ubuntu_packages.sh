@@ -90,6 +90,7 @@ function install_ubuntu_dev() {
                 sudo dpkg --configure -a
             fi
         else
+            cmake --version
             color_red "cmake already installed, this project required cmake 3.22.4.
                 \nPlease installed it manually or remove it first"
             echo -e $color_word
@@ -141,35 +142,44 @@ function install_ubuntu_dev() {
 function install_ubuntu_LRA_onpi() {
     # add code for aarch64 (ARM64)
     cd $PARENT_PATH
-    wget https://update.code.visualstudio.com/latest/linux-deb-arm64/stable -O code.deb
-    sudo dpkg -i code.deb
-    sudo apt --fix-broken install -y
-    sudo dpkg -i code.deb
+    installation_info "VS Code arm64 stable"
+    if [ ! -f ./code.deb ];then
+        wget https://update.code.visualstudio.com/latest/linux-deb-arm64/stable -O code.deb
+        sudo dpkg -i code.deb
+        sudo apt --fix-broken install -y
+        sudo dpkg -i code.deb
 
-    code --install-extension austin.code-gnu-global
-    code --install-extension cschlosser.doxdocgen
-    code --install-extension Gruntfuggly.todo-tree
-    code --install-extension jeff-hykin.better-cpp-syntax
-    code --install-extension ms-python.python
-    code --install-extension ms-python.vscode-pylance
-    code --install-extension ms-toolsai.jupyter
-    code --install-extension ms-toolsai.jupyter-keymap
-    code --install-extension ms-toolsai.jupyter-renderers
-    code --install-extension ms-vscode.cmake-tools
-    code --install-extension ms-vscode.cpptools
-    code --install-extension ms-vscode.cpptools-extension-pack
-    code --install-extension ms-vscode.cpptools-themes
+        code --install-extension austin.code-gnu-global
+        code --install-extension cschlosser.doxdocgen
+        code --install-extension Gruntfuggly.todo-tree
+        code --install-extension jeff-hykin.better-cpp-syntax
+        code --install-extension ms-python.python
+        code --install-extension ms-python.vscode-pylance
+        code --install-extension ms-toolsai.jupyter
+        code --install-extension ms-toolsai.jupyter-keymap
+        code --install-extension ms-toolsai.jupyter-renderers
+        code --install-extension ms-vscode.cmake-tools
+        code --install-extension ms-vscode.cpptools
+        code --install-extension ms-vscode.cpptools-extension-pack
+        code --install-extension ms-vscode.cpptools-themes
 
-    # maximum file watcher number of vscode (debug usage)
-    # ref: https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc
-    echo 'fs.inotify.max_user_watches=524288' | sudo tee -a /etc/sysctl.conf
-    sudo sysctl -p
+        # maximum file watcher number of vscode (debug usage)
+        # ref: https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc
+        if [ ! grep 'max_user_watches' /etc/sysctl.conf ];then
+            echo 'fs.inotify.max_user_watches=524288' | sudo tee -a /etc/sysctl.conf
+            sudo sysctl -p
+        fi
+    else
+        color_green "VS Code already downloaded"
+        echo -e $color_word
+    fi
+    installation_end "VS Code arm64 stable"
 
     # install some libraries for project - LRA on Raspberry 4b
     # C++ fmt
     installation_info "fmt"
     # TODO:check fmt existed or not
-    if [[ ! -d "/usr/local/include/fmt" && ! -d "/usr/include/fmt" ]]
+    if [[ ! -d /usr/local/include/fmt && ! -d /usr/include/fmt ]]
     then
         cd $PARENT_PATH
         git clone https://github.com/fmtlib/fmt.git
@@ -187,15 +197,16 @@ function install_ubuntu_LRA_onpi() {
     # wiringPi
     installation_info "wiringPi"
     cd $PARENT_PATH
-    if find . -name wiringpi-2.61-g.deb ; then
-        echo "wiringpi-2.61-g.deb already downloaded"
+    if [ -f ./wiringpi-2.61-g.deb ] ; then
+        color_green "wiringpi-2.61-g.deb already downloaded"
+        echo -e $color_word
     else
     # Oops model 17 problem
         sudo dpkg --add-architecture armhf
         sudo apt update
         wget https://github.com/guation/WiringPi-arm64/releases/download/2.61-g/wiringpi-2.61-g.deb
     fi
-    sudo apt install -f ./wiringpi-*-g.deb
+    sudo apt install -f ./wiringpi-*-g.deb -y
 
     # gpio -readall group problem
     sudo apt install rpi.gpio-common
@@ -208,7 +219,7 @@ function install_ubuntu_LRA_onpi() {
     sudo apt install libi2c-dev -y
     # add $USER to i2c group
     sudo adduser $USER i2c
-    sudo su $USER
+    # sudo su $USER
     installation_end "libi2c-dev"
 
     # vcgencmd
@@ -219,7 +230,7 @@ function install_ubuntu_LRA_onpi() {
 
     # main program
     installation_info "LRA main program"
-    if [ ! -d "~/LRA_Raspberry4b" ];then
+    if [ ! -d ~/LRA_Raspberry4b ];then
         # clone from git
         cd ~
         git clone https://github.com/DennisLiu16/LRA_Raspberry4b.git
@@ -234,7 +245,7 @@ function install_ubuntu_LRA_onpi() {
         GROUP="spi"
         if [ ! $(getent group $GROUP) ]; then
             sudo groupadd $GROUP
-            sudo su $USER
+            # sudo su $USER
         fi
 
         if  id -nG "$USER" | grep -qw "$GROUP" ; then
@@ -242,7 +253,7 @@ function install_ubuntu_LRA_onpi() {
             echo "$USER was already in $GROUP"
         else
             sudo adduser $USER $GROUP
-            sudo su $USER
+            # sudo su $USER
         fi
 
         if grep '#for LRA SPI' /etc/udev/rules.d/50-spi.rules ; then
@@ -260,7 +271,7 @@ function install_ubuntu_LRA_onpi() {
 
     # LRA web
     installation_info "LRA Web"
-    if [ ! -d "~/LRA_Web" ];then
+    if [ ! -d ~/LRA_Web ];then
         cd ~
         git clone https://github.com/DennisLiu16/LRA_Web.git
         # packages required
@@ -280,13 +291,18 @@ function install_ubuntu_LRA_onpi() {
     installation_end "LRA Web"
 
     # TODO:add global alias
-    cd ~
-    echo "alias cdc='cd ~/LRA_Raspberry4b'" >> .bash_aliases
-    echo "alias cdw='cd ~/LRA_Web'">> .bash_aliases
-    # wifi 
-    echo "alias getMAC='cat /sys/class/net/wlan0/address'" >> .bash_aliases
-    # measure
-    echo "alias temp='vcgencmd measure_temp'" >> .bash_aliases
+    if [ grep 'getMAC' ~/.bash_aliases ];then
+        color_green "Aliases already existed"
+        echo -e $color_word
+    else
+        cd ~
+        echo "alias cdc='cd ~/LRA_Raspberry4b'" >> .bash_aliases
+        echo "alias cdw='cd ~/LRA_Web'">> .bash_aliases
+        # wifi 
+        echo "alias getMAC='cat /sys/class/net/wlan0/address'" >> .bash_aliases
+        # measure
+        echo "alias temp='vcgencmd measure_temp'" >> .bash_aliases
+    fi
     cd $PARENT_PATH
 }
 
@@ -351,7 +367,7 @@ do
     esac
     done
 
-if [ $ONPI == true ];then
+if [ $ONPI = true ];then
     color_red $ONPI
     sONPI=$color_word
 else
@@ -365,14 +381,14 @@ else
     sENABLE_REBOOT=$ENABLE_REBOOT
 fi
 
-if [ ! $PROJECT == none ];then
+if [ ! $PROJECT = none ];then
     color_green $PROJECT
     sPROJECT=$color_word
 else
     sPROJECT=$PROJECT
 fi
 
-if [ $ENABLE_ALL == true ];then
+if [ $ENABLE_ALL = true ];then
     color_red $ENABLE_ALL
     sENABLE_ALL=$color_word
 else
@@ -388,7 +404,7 @@ echo "==========================="
 
 # main
 # create a tmp dir
-if [ ! -d "./pkg_tmp" ];then
+if [ ! -d ./pkg_tmp ];then
     mkdir ./pkg_tmp
 fi
 cd ./pkg_tmp
@@ -406,16 +422,19 @@ install_ubuntu_dev
 # install LRA project depend software and alias
 if [[ $PROJECT = "LRA" && $ONPI = true ]];then
     color_red "project is LRA"
-    echo $color_word
+    echo -e $color_word
     install_ubuntu_LRA_onpi
 fi
 
-echo $ENABLE_REBOOT
+sudo apt update -y
+sudo apt upgrade -y
 
 # if reboot flag on
 if [ $ENABLE_REBOOT = true ];then
     echo "reboot starts"
     sudo reboot
+else
+    sudo su $USER
 fi
 
 

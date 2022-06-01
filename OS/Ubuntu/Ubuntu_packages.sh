@@ -82,7 +82,8 @@ function install_ubuntu_dev() {
             # link to usr/local/bin
             sudo ln -s /opt/cmake-3.22.4-linux-aarch64/bin/* /usr/local/bin/
             cd $PARENT_PATH
-            if [ which cmake 2>/dev/null ];then
+            sleep 2s
+            if which cmake 2>/dev/null ;then
                 installation_end "cmake 3.22.4"
             else
                 color_red "cmake 3.22.4 installation failed, please check it\n\n"

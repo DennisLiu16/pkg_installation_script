@@ -75,7 +75,7 @@ function install_ubuntu_dev() {
             cd /opt
             sudo wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4-linux-aarch64.sh
             sudo chmod +x cmake-3.22.4-linux-aarch64.sh
-            sudo ./cmake-3.22.4-linux-aarch64.sh
+            sudo ./cmake-3.22.4-linux-aarch64.sh -y
             # link to usr/local/bin
             mkdir /usr/local/bin
             sudo ln -s /opt/cmake-3.22.4-linux-aarch64.sh/bin/* /usr/local/bin

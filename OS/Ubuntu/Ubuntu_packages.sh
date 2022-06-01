@@ -85,6 +85,7 @@ function install_ubuntu_dev() {
             else
                 color_red "cmake 3.22.4 installation failed, please check it\n\n"
                 echo -e $color_word
+                sudo dpkg --configure -a
             fi
         else
             color_red "cmake already installed, this project required cmake 3.22.4.

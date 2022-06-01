@@ -410,5 +410,6 @@ fi
 
 # if reboot flag on
 if [ $ENABLE_REBOOT = true ];then
+    echo "reboot starts"
     sudo reboot
 fi

@@ -156,6 +156,11 @@ function install_ubuntu_LRA_onpi() {
     code --install-extension ms-vscode.cpptools-extension-pack
     code --install-extension ms-vscode.cpptools-themes
 
+    # maximum file watcher number of vscode (debug usage)
+    # ref: https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc
+    echo 'fs.inotify.max_user_watches=524288' | sudo tee -a /etc/sysctl.conf
+    sudo sysctl -p
+
     # install some libraries for project - LRA on Raspberry 4b
     # C++ fmt
     installation_info "fmt"

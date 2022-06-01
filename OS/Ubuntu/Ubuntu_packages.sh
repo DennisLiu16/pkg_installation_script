@@ -60,16 +60,6 @@ function install_ubuntu_dev() {
     if [[ $ONPI = true && $PROJECT = "LRA" ]];then
         installation_info "cmake 3.22.4"
         if ! which cmake 2>/dev/null; then
-            # download and compile, will take about 1 hour
-            # cd $PARENT_PATH
-            # wget https://github.com/Kitware/CMake/releases/download/v3.22.4/cmake-3.22.4.tar.gz
-            # tar zxvf cmake-3.22.4.tar.gz
-            # cd cmake-3.22.4
-            # ./bootstrap
-            # make
-            # sudo make install
-            # installation_end "cmake 3.22.4"
-
             # install binary files directly
             # install path to /opt/cmake
             cd /opt
@@ -82,14 +72,6 @@ function install_ubuntu_dev() {
             # link to usr/local/bin
             sudo ln -s /opt/cmake-3.22.4-linux-aarch64/bin/* /usr/local/bin/
             cd $PARENT_PATH
-            sleep 2s
-            if which cmake 2>/dev/null ;then
-                installation_end "cmake 3.22.4"
-            else
-                color_red "cmake 3.22.4 installation failed, please check it\n\n"
-                echo -e $color_word
-                sudo dpkg --configure -a
-            fi
         else
             cmake --version
             color_red "cmake already installed, this project required cmake 3.22.4.
@@ -134,10 +116,18 @@ function install_ubuntu_dev() {
     installation_end "tree"
 
     # add vscode
-
     installation_info "code normal"
     sudo apt install code
     installation_end "code normal"
+
+    # confirm cmake state
+    if which cmake 2>/dev/null ;then
+        installation_end "cmake 3.22.4"
+    else
+        color_red "cmake 3.22.4 installation failed, please check it\n\n"
+        echo -e $color_word
+        sudo dpkg --configure -a
+    fi
 }
 
 function install_ubuntu_LRA_onpi() {

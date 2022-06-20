@@ -124,6 +124,11 @@ function install_ubuntu_dev() {
     installation_info "C++ boost"
     sudo apt install libboost-all-dev
     installation_end "C++ boost"
+
+    # add spdlog lib
+    installation_info "C++ spdlog lib"
+    sudo apt install libspdlog-dev
+    installation_end "C++ spdlog lib"
 }
 
 function install_ubuntu_LRA_onpi() {

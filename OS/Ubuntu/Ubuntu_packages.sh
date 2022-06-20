@@ -132,6 +132,11 @@ function install_ubuntu_dev() {
     installation_info "code normal"
     sudo apt install code
     installation_end "code normal"
+
+    # add boost lib
+    installation_info "C++ boost"
+    sudo apt install libboost-all-dev
+    installation_end "C++ boost"
 }
 
 function install_ubuntu_LRA_onpi() {
@@ -249,6 +254,9 @@ function install_ubuntu_LRA_onpi() {
             echo -e "#for LRA SPI\nSUBSYSTEM==\"spidev\",KERNEL==\"spidev0.*\",GROUP=\"spi\",MODE=\"0660\"" | sudo tee -a /etc/udev/rules.d/50-spi.rules
         fi
 
+        # setting pwm config
+        
+
     else
         echo "LRA_Raspberry4b already existed at default path"
     fi
@@ -261,6 +269,7 @@ function install_ubuntu_LRA_onpi() {
         git clone https://github.com/DennisLiu16/LRA_Web.git
         # packages required
         pip install django
+        pip install channels
         pip install matplotlib
         pip install prettytable
         cd LRA_Web

@@ -179,6 +179,10 @@ function install_ubuntu_LRA_onpi() {
         sudo dpkg --configure -a
     fi
 
+    installation_info "s-tui"
+    sudo pip install s-tui
+    installation_end "s-tui"
+
     # install some libraries for project - LRA on Raspberry 4b
     # C++ fmt
     installation_info "fmt"

@@ -85,6 +85,11 @@ function install_ubuntu_dev() {
         installation_end "cmake default"
     fi
 
+    # linux-tool
+    installation_info "linux-tool"
+    sudo apt-get install linux-tools-common
+    installation_end "linux-tool"
+
     # git
     installation_info "git"
     sudo apt install git -y

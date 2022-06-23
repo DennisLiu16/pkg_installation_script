@@ -85,9 +85,9 @@ function install_ubuntu_dev() {
         installation_end "cmake default"
     fi
 
-    # linux-tool
+    # linux-tool - perf
     installation_info "linux-tool"
-    sudo apt-get install linux-tools-common
+    sudo apt install linux-tools-raspi
     installation_end "linux-tool"
 
     # git

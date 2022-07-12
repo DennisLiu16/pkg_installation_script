@@ -131,9 +131,9 @@ function install_ubuntu_dev() {
     installation_end "C++ boost"
 
     # add spdlog lib
-    installation_info "C++ spdlog lib"
-    sudo apt install libspdlog-dev
-    installation_end "C++ spdlog lib"
+    # installation_info "C++ spdlog lib" //version too old 1.5.0
+    # sudo apt install libspdlog-dev
+    # installation_end "C++ spdlog lib"
 }
 
 function install_ubuntu_LRA_onpi() {
@@ -455,4 +455,9 @@ else
     sudo su $USER
 fi
 
+# What's new in version 3
+## clang
+## vscode extension - emilast.LogFileHighlighter
+## apt install spdlog lib change to git clone header into third_party/spdlog
+## g++-11
 

@@ -461,4 +461,4 @@ fi
 ## apt install spdlog lib change to git clone header into third_party/spdlog
 ## g++-11
 ## Starship - https://starship.rs/guide/#%F0%9F%9A%80-installation
-
+## Setting i2c speed in /boot/firmware/syscfg.txt (https://github.com/raspberrypi/linux/issues/4884)
